@@ -38,7 +38,7 @@ COPY --from=build --chown=app:app /app/forwarder .
 
 # /data must be backed by a persistent volume in Railway so the Tailscale
 # node state (keys, identity) survives container restarts.
-VOLUME ["/data"]
+# VOLUME ["/data"]
 
 # The proxy accepts HTTPS connections from within the tailnet on port 443.
 # This port is NOT exposed to the public internet; all traffic goes through
