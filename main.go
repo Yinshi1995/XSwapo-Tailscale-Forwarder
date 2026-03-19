@@ -12,6 +12,7 @@ import (
 	"context"
 	"crypto/tls"
 	"log"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -107,6 +108,12 @@ func main() {
 
 	// ── Reverse proxy ──────────────────────────────────────────────────────────
 	proxy := httputil.NewSingleHostReverseProxy(upstream)
+	proxy.Transport = &http.Transport{
+		DialContext:           (&net.Dialer{Timeout: 10 * time.Second}).DialContext,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ResponseHeaderTimeout: 30 * time.Second,
+		IdleConnTimeout:       90 * time.Second,
+	}
 
 	defaultDirector := proxy.Director
 	proxy.Director = func(req *http.Request) {
@@ -163,6 +170,9 @@ func main() {
 	httpSrv := &http.Server{
 		Handler:           handler,
 		ReadHeaderTimeout: 10 * time.Second,
+		WriteTimeout:      60 * time.Second,
+		ReadTimeout:       60 * time.Second,
+		IdleTimeout:       120 * time.Second,
 	}
 
 	// Graceful shutdown: wait for SIGINT / SIGTERM, then drain in-flight requests.
