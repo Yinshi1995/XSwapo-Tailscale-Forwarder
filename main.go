@@ -168,11 +168,10 @@ func main() {
 
 	// ── HTTP server ───────────────────────────────────────────────────────────
 	httpSrv := &http.Server{
-		Handler:           handler,
-		ReadHeaderTimeout: 10 * time.Second,
-		WriteTimeout:      60 * time.Second,
-		ReadTimeout:       60 * time.Second,
-		IdleTimeout:       120 * time.Second,
+		Handler:      handler,
+		WriteTimeout: 60 * time.Second,
+		ReadTimeout:  60 * time.Second,
+		IdleTimeout:  120 * time.Second,
 	}
 
 	// Graceful shutdown: wait for SIGINT / SIGTERM, then drain in-flight requests.
