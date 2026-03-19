@@ -39,12 +39,6 @@ COPY --from=build /app/forwarder .
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-# /data must be backed by a persistent volume in Railway so the Tailscale
-# node state (keys, identity) survives container restarts.
-# Railway mounts this volume as root at runtime; entrypoint.sh fixes the
-# ownership before exec-ing the binary as the app user.
-VOLUME ["/data"]
-
 # The proxy accepts HTTPS connections from within the tailnet on port 443.
 # This port is NOT exposed to the public internet; all traffic goes through
 # the Tailscale WireGuard tunnel.
